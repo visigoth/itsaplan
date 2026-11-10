@@ -816,7 +816,15 @@ function providerWebhookApi(
       body: (create) => ({
         ...(create ? { type: 'gitea' } : {}),
         active: true,
-        events: ['pull_request', 'create', 'delete', ...issueHooks],
+        events: [
+          'pull_request',
+          'pull_request_review_approved',
+          'pull_request_review_rejected',
+          'pull_request_review_comment',
+          'create',
+          'delete',
+          ...issueHooks,
+        ],
         config: { url: payloadUrl, content_type: 'json', secret },
       }),
     };
@@ -855,7 +863,7 @@ function providerWebhookApi(
     body: (create) => ({
       ...(create ? { name: 'web' } : {}),
       active: true,
-      events: ['pull_request', 'check_run', 'create', 'delete', ...issueHooks],
+      events: ['pull_request', 'pull_request_review', 'check_run', 'create', 'delete', ...issueHooks],
       config: { url: payloadUrl, content_type: 'json', insecure_ssl: '0', secret },
     }),
   };
