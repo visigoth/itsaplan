@@ -24,6 +24,10 @@ export interface PullRequestEvent {
   headSha: string | null;
   defaultBranch: string | null;
   draft: boolean;
+  // Repository logins: who opened the pull request, and who merged it on a merge. Null
+  // when the payload does not say.
+  author: string | null;
+  mergedBy: string | null;
 }
 
 export interface BranchEvent {
@@ -182,6 +186,7 @@ interface GithubPayload {
     base?: { ref?: string };
     head?: { ref?: string; sha?: string };
     user?: { login?: string };
+    merged_by?: { login?: string } | null;
   };
   // GitHub sends state, body and user; Gitea and Forgejo send type and content, with
   // the reviewer as the sender.
@@ -333,7 +338,7 @@ export function pipelineStatus(status: string | undefined): PipelineStatus | nul
 }
 
 function parseGithubPullRequest(payload: unknown): PullRequestEvent | null {
-  const { action, pull_request: pr, repository } = payload as GithubPayload;
+  const { action, pull_request: pr, repository, sender } = payload as GithubPayload;
   if (!pr?.number || !repository?.full_name) return null;
   const merged = action === 'closed' && pr.merged === true;
   const closed = action === 'closed' && !merged;
@@ -358,6 +363,8 @@ function parseGithubPullRequest(payload: unknown): PullRequestEvent | null {
     headSha: pr.head?.sha ?? null,
     defaultBranch: repository.default_branch ?? null,
     draft: pr.draft === true,
+    author: pr.user?.login ?? null,
+    mergedBy: merged ? (pr.merged_by?.login ?? sender?.login ?? null) : null,
   };
 }
 
@@ -516,6 +523,8 @@ interface GitlabPayload {
     note?: string;
   };
   project?: { path_with_namespace?: string; default_branch?: string; web_url?: string };
+  // The member whose action sent the hook.
+  user?: { username?: string };
   merge_request?: { iid?: number; source_branch?: string };
   issue?: { iid?: number; confidential?: boolean };
   labels?: { title?: string }[];
@@ -681,6 +690,9 @@ const gitlab: GitProvider = {
         null,
       defaultBranch: project.default_branch ?? null,
       draft: mr.draft === true || mr.work_in_progress === true,
+      // The hook names only who acted: the author on an open, the merger on a merge.
+      author: opened ? ((payload as GitlabPayload).user?.username ?? null) : null,
+      mergedBy: merged ? ((payload as GitlabPayload).user?.username ?? null) : null,
     };
   },
 };
@@ -709,10 +721,12 @@ interface BitbucketPayload {
       } | null;
     }[];
   };
+  actor?: { nickname?: string };
   pullrequest?: {
     id?: number;
     title?: string;
     description?: string | null;
+    author?: { nickname?: string };
     draft?: boolean;
     destination?: { branch?: { name?: string } };
     source?: { branch?: { name?: string }; commit?: { hash?: string } };
@@ -753,7 +767,7 @@ const bitbucket: GitProvider = {
     const closed = key === 'pullrequest:rejected';
     const updated = key === 'pullrequest:updated';
     if (!opened && !merged && !closed && !updated) return null;
-    const { pullrequest: pr, repository } = payload as BitbucketPayload;
+    const { pullrequest: pr, repository, actor } = payload as BitbucketPayload;
     if (!pr?.id || !repository?.full_name) return null;
     return {
       kind: 'pull_request',
@@ -770,6 +784,8 @@ const bitbucket: GitProvider = {
       // the merged-into-default-branch check is off for Bitbucket.
       defaultBranch: repository.mainbranch?.name ?? null,
       draft: pr.draft === true,
+      author: pr.author?.nickname ?? null,
+      mergedBy: merged ? (actor?.nickname ?? null) : null,
     };
   },
 };
