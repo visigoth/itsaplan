@@ -102,7 +102,8 @@ release.
 - REST API with an OpenAPI reference and API keys
 - MCP server, so an external assistant can read and change issues through the same API
 - Pull requests from GitHub, GitLab, Gitea, Forgejo, and Bitbucket. "Fixes KEY-42" links the
-  pull request to the issue, and the issue moves when the pull request opens and merges
+  pull request to the issue, the issue moves when the pull request opens and merges, and a
+  review of a pull request an agent opened is recorded on the issue and handed to that agent
 - Outgoing webhooks: subscribe to events, signed payloads, and retries with a delivery log
 - Sign in with an email or a username and a password, a passkey, or Google
 - Notifications by email (SMTP or Resend) and Telegram, with per-member preferences
