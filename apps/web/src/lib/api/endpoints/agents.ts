@@ -54,6 +54,7 @@ export interface AiAgent {
   // Run triggers.
   triggerOnMention: boolean;
   triggerOnAssign: boolean;
+  triggerOnReview: boolean;
   // Off gates only the chat; mentions, delegations and schedules still run the agent.
   chatEnabled: boolean;
   // The member custom fields that start a run when the agent is set into one, each
@@ -159,6 +160,7 @@ export interface NewAiAgentInput {
   memoryLastMessages?: number | null;
   triggerOnMention?: boolean;
   triggerOnAssign?: boolean;
+  triggerOnReview?: boolean;
   chatEnabled?: boolean;
   fieldTriggers?: AgentFieldTrigger[];
   delegationDelaySec?: number;
@@ -182,6 +184,7 @@ export interface AiAgentPatch {
   memoryLastMessages?: number | null;
   triggerOnMention?: boolean;
   triggerOnAssign?: boolean;
+  triggerOnReview?: boolean;
   chatEnabled?: boolean;
   fieldTriggers?: AgentFieldTrigger[];
   delegationDelaySec?: number;
