@@ -1233,6 +1233,13 @@
       "when": 1794331372810,
       "tag": "0175_agent_review_trigger",
       "breakpoints": true
+    },
+    {
+      "idx": 176,
+      "version": "7",
+      "when": 1794959556686,
+      "tag": "0176_agent_forge_identity",
+      "breakpoints": true
     }
   ]
 }

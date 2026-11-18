@@ -31,6 +31,16 @@ export type ReasoningEffort = 'low' | 'medium' | 'high';
 // external agent has an API key: `apiKeyStart` is the non-secret prefix for display
 // (null for internal), and the plaintext key is only returned once, on create and
 // on regenerate.
+export interface AgentForgeIdentity {
+  connectionId: number;
+  login: string;
+}
+
+export interface AgentForgeIdentityRead extends AgentForgeIdentity {
+  provider: string;
+  baseUrl: string;
+}
+
 export interface AiAgent {
   id: number;
   teamId: number;
@@ -60,6 +70,8 @@ export interface AiAgent {
   // The member custom fields that start a run when the agent is set into one, each
   // with the seconds its run waits before the agent may pick it up.
   fieldTriggers: AgentFieldTriggerRead[];
+  // The logins the agent opens pull requests as, each on a Git connection of the team.
+  forgeIdentities: AgentForgeIdentityRead[];
   // How long a delegation run waits before the agent may pick it up.
   delegationDelaySec: number;
   // The member who created the agent, and whose runs an 'owner'-scoped runner is
@@ -157,6 +169,7 @@ export interface NewAiAgentInput {
   triggerOnReview?: boolean;
   chatEnabled?: boolean;
   fieldTriggers?: AgentFieldTrigger[];
+  forgeIdentities?: AgentForgeIdentity[];
   delegationDelaySec?: number;
   projectIds?: number[];
   runnerScope?: 'owner' | 'team';
@@ -181,6 +194,7 @@ export interface AiAgentPatch {
   triggerOnReview?: boolean;
   chatEnabled?: boolean;
   fieldTriggers?: AgentFieldTrigger[];
+  forgeIdentities?: AgentForgeIdentity[];
   delegationDelaySec?: number;
   projectIds?: number[];
   runnerScope?: 'owner' | 'team';

@@ -9,7 +9,7 @@ An external agent gets its tasks in one of two ways:
 This page describes the endpoint.
 
 The endpoint gets the same tasks as a runner: delegations, mentions, reviews of the pull
-requests it opened, field and status triggers, schedules, manual runs, and chat messages. Each task has the same prompt and
+requests its forge accounts opened, field and status triggers, schedules, manual runs, and chat messages. Each task has the same prompt and
 system prompt. The endpoint sends the result through the same routes as a runner.
 
 ## Set it up
