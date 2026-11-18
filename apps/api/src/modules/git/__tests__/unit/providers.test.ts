@@ -383,7 +383,6 @@ describe('repository provider events', () => {
             body: 'The retry swallows the error.',
             html_url: 'https://github.com/acme/site/pull/42#pullrequestreview-7',
             user: { login: 'ann' },
-            author_association: 'MEMBER',
           },
           pull_request: {
             number: 42,
@@ -403,7 +402,6 @@ describe('repository provider events', () => {
       body: 'The retry swallows the error.',
       reviewer: 'ann',
       author: 'bot',
-      reviewerTrusted: true,
     });
   });
 
@@ -456,7 +454,6 @@ describe('repository provider events', () => {
       body: 'Looks good.',
       reviewer: 'ann',
       author: 'bot',
-      reviewerTrusted: null,
     });
     expect(
       provider.parse(
