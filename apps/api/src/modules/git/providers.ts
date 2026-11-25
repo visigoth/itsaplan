@@ -94,7 +94,6 @@ export interface IssueCommentEvent {
   author: string | null;
 }
 
-
 // A review submitted on a pull request: who reviewed, what they decided, and who
 // opened the pull request on the host.
 export type PullRequestReviewState = 'approved' | 'changes_requested' | 'commented';
@@ -528,7 +527,6 @@ interface GitlabPayload {
   merge_request?: { iid?: number; source_branch?: string };
   issue?: { iid?: number; confidential?: boolean };
   labels?: { title?: string }[];
-  user?: { username?: string };
   changes?: {
     draft?: { previous?: boolean; current?: boolean };
     title?: unknown;
